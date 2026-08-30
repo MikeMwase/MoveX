@@ -3,6 +3,7 @@ using MoveX.Application.Operations;
 using MoveX.Infrastructure.Data;
 using MoveX.Domain.Entities.Drivers;
 using MoveX.Domain.Entities.Operations;
+using MoveX.Domain.Entities.Finance;
 
 namespace MoveX.Infrastructure.Services;
 
@@ -21,8 +22,8 @@ public class OperationsService(MoveXDbContext db) : IOperationsService
 
     public async Task<IReadOnlyList<DispatchCandidateDto>> GetDispatchCandidatesAsync(int bookingId, CancellationToken cancellationToken = default)
     {
-        var booking = await db.Bookings.AsNoTracking().SingleOrDefaultAsync(x => x.Id == bookingId, cancellationToken);
-        if (booking == null) return [];
+        var bookingExists = await db.Bookings.AnyAsync(x => x.Id == bookingId, cancellationToken);
+        if (!bookingExists) return [];
 
         var assigned = await db.DriverAssignments.Where(x => x.BookingId == bookingId && x.Status != AssignmentStatus.Rejected && x.Status != AssignmentStatus.Expired && x.Status != AssignmentStatus.Cancelled).Select(x => x.DriverId).ToListAsync(cancellationToken);
 

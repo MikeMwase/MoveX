@@ -8,6 +8,7 @@ using MoveX.Domain.Entities.Pricing;
 using MoveX.Domain.Entities.Services;
 using MoveX.Domain.Entities.Trips;
 using MoveX.Domain.Entities.Operations;
+using MoveX.Infrastructure.Data.Seed;
 
 namespace MoveX.Infrastructure.Data;
 
@@ -176,5 +177,7 @@ public class MoveXDbContext : DbContext
         modelBuilder.Entity<DeliveryProof>(e => { e.HasKey(x => x.Id); e.Property(x => x.FileUrl).HasMaxLength(2048); e.HasIndex(x => new { x.TripId, x.Type }); e.HasOne(x => x.Trip).WithMany(x => x.DeliveryProofs).HasForeignKey(x => x.TripId).OnDelete(DeleteBehavior.Cascade); });
         modelBuilder.Entity<Payment>(e => { e.HasKey(x => x.Id); e.Property(x => x.PaymentReference).HasMaxLength(100).IsRequired(); e.Property(x => x.Currency).HasMaxLength(3).IsRequired(); e.Property(x => x.Amount).HasPrecision(18, 2); e.HasIndex(x => x.PaymentReference).IsUnique(); e.HasIndex(x => new { x.BookingId, x.Status }); e.HasOne(x => x.Booking).WithMany().HasForeignKey(x => x.BookingId).OnDelete(DeleteBehavior.Restrict); });
         modelBuilder.Entity<DriverPayout>(e => { e.HasKey(x => x.Id); e.Property(x => x.GrossAmount).HasPrecision(18, 2); e.Property(x => x.CommissionAmount).HasPrecision(18, 2); e.Property(x => x.Adjustments).HasPrecision(18, 2); e.Property(x => x.NetAmount).HasPrecision(18, 2); e.HasIndex(x => new { x.DriverId, x.PeriodStart, x.PeriodEnd }); e.HasOne(x => x.Driver).WithMany().HasForeignKey(x => x.DriverId).OnDelete(DeleteBehavior.Restrict); });
+
+        MoveXSeedData.Seed(modelBuilder);
     }
 }

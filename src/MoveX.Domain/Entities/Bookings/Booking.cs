@@ -12,6 +12,7 @@ public class Booking
     public BookingStatus Status { get; set; } = BookingStatus.Draft;
     public BookingType Type { get; set; } = BookingType.Immediate;
     public DateTime RequestedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? ScheduledPickupAt { get; set; }
     public int? VehicleTypeId { get; set; }
     public decimal EstimatedDistanceKm { get; set; }
